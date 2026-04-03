@@ -14,7 +14,7 @@ class Config:
     MAX_UPLOAD_SIZE_MB = int(os.environ.get('MAX_UPLOAD_SIZE_MB', 10))
     MAX_CONTENT_LENGTH = MAX_UPLOAD_SIZE_MB * 1024 * 1024
 
-    SESSION_TYPE = 'filesystem'
+    SESSION_TYPE = os.environ.get('SESSION_TYPE', 'filesystem')
     SESSION_TIMEOUT_MINUTES = int(os.environ.get('SESSION_TIMEOUT_MINUTES', 30))
     PERMANENT_SESSION_LIFETIME = SESSION_TIMEOUT_MINUTES * 60
 
