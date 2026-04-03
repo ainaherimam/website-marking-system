@@ -1,39 +1,435 @@
-/* Relevés de Notes — Styles personnalisés */
+/* =========================================================================
+   Relevés de Notes — University Grade Platform
+   Clean, professional design
+   ========================================================================= */
+
+/* --- CSS Variables (Color Palette) --- */
+:root {
+    --uni-primary: #1e3a5f;
+    --uni-primary-light: #2a5082;
+    --uni-primary-dark: #152a45;
+    --uni-accent: #2980b9;
+    --uni-accent-light: #3498db;
+    --uni-bg: #f0f2f5;
+    --uni-bg-white: #ffffff;
+    --uni-text: #2c3e50;
+    --uni-text-muted: #6c757d;
+    --uni-border: #dee2e6;
+    --uni-success: #27ae60;
+    --uni-warning: #f39c12;
+    --uni-danger: #c0392b;
+    --uni-info: #2980b9;
+    --uni-sidebar-width: 0px;
+}
+
+/* --- Base --- */
+html {
+    height: 100%;
+}
 
 body {
-    background-color: #f5f7fa;
+    background-color: var(--uni-bg);
+    color: var(--uni-text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+}
+
+main.container {
+    flex: 1;
+    padding-bottom: 2rem;
+}
+
+a {
+    color: var(--uni-accent);
+}
+a:hover {
+    color: var(--uni-primary);
+}
+
+/* --- Typography --- */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--uni-primary);
+    font-weight: 600;
+}
+
+h2 {
+    font-size: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--uni-primary);
+    margin-bottom: 1.5rem;
+}
+
+/* --- Navbar --- */
+.navbar {
+    background: linear-gradient(135deg, var(--uni-primary) 0%, var(--uni-primary-light) 100%) !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    padding: 0.5rem 0;
 }
 
 .navbar-brand {
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.02em;
 }
 
-.card {
-    border: none;
-    border-radius: 0.75rem;
+.navbar .nav-link {
+    color: rgba(255,255,255,0.85) !important;
+    font-weight: 500;
+    font-size: 0.875rem;
+    padding: 0.6rem 0.9rem !important;
+    border-radius: 0.375rem;
+    transition: background-color 0.15s ease;
 }
 
-.card-title {
-    font-weight: 600;
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+    color: #fff !important;
+    background-color: rgba(255,255,255,0.12);
 }
 
-/* Dashboard stats cards */
-.stat-card {
-    border-left: 4px solid;
+.navbar .dropdown-toggle::after {
+    margin-left: 0.4em;
+}
+
+.dropdown-menu {
+    border: 1px solid var(--uni-border);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     border-radius: 0.5rem;
 }
 
-.stat-card.primary { border-left-color: var(--bs-primary); }
-.stat-card.success { border-left-color: var(--bs-success); }
-.stat-card.warning { border-left-color: var(--bs-warning); }
-.stat-card.danger  { border-left-color: var(--bs-danger); }
+.dropdown-item {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+}
 
-/* Table improvements */
+/* --- Cards --- */
+.card {
+    border: 1px solid var(--uni-border);
+    border-radius: 0.625rem;
+    background: var(--uni-bg-white);
+    transition: box-shadow 0.15s ease;
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid var(--uni-border);
+    font-weight: 600;
+    padding: 0.75rem 1.25rem;
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+/* Clickable cards (dashboard) */
+a.text-decoration-none > .card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-color: var(--uni-accent-light);
+}
+
+/* --- Stat Cards --- */
+.stat-card {
+    border-left: 4px solid;
+    border-radius: 0.625rem;
+    background: var(--uni-bg-white);
+}
+
+.stat-card.primary { border-left-color: var(--uni-primary); }
+.stat-card.success { border-left-color: var(--uni-success); }
+.stat-card.warning { border-left-color: var(--uni-warning); }
+.stat-card.danger  { border-left-color: var(--uni-danger); }
+.stat-card.info    { border-left-color: var(--uni-info); }
+
+.stat-card .fs-2 {
+    color: var(--uni-primary);
+}
+
+/* --- Tables --- */
+.table {
+    margin-bottom: 0;
+}
+
+.table thead {
+    background-color: #f8f9fa;
+}
+
 .table th {
     font-weight: 600;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     text-transform: uppercase;
-    letter-spacing: 0.03em;
-    color: #6c757d;
+    letter-spacing: 0.04em;
+    color: var(--uni-text-muted);
+    border-bottom-width: 2px;
+    padding: 0.75rem;
+    white-space: nowrap;
+}
+
+.table td {
+    padding: 0.65rem 0.75rem;
+    vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(41, 128, 185, 0.04);
+}
+
+/* --- Forms --- */
+.form-label {
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: var(--uni-text);
+    margin-bottom: 0.3rem;
+}
+
+.form-control, .form-select {
+    border: 1px solid var(--uni-border);
+    border-radius: 0.375rem;
+    font-size: 0.9375rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--uni-accent);
+    box-shadow: 0 0 0 0.2rem rgba(41, 128, 185, 0.15);
+}
+
+/* --- Buttons --- */
+.btn {
+    font-weight: 500;
+    font-size: 0.875rem;
+    border-radius: 0.375rem;
+    padding: 0.45rem 1rem;
+}
+
+.btn-primary {
+    background-color: var(--uni-primary);
+    border-color: var(--uni-primary);
+}
+.btn-primary:hover {
+    background-color: var(--uni-primary-light);
+    border-color: var(--uni-primary-light);
+}
+
+.btn-success {
+    background-color: var(--uni-success);
+    border-color: var(--uni-success);
+}
+
+.btn-danger {
+    background-color: var(--uni-danger);
+    border-color: var(--uni-danger);
+}
+
+.btn-outline-primary {
+    color: var(--uni-primary);
+    border-color: var(--uni-primary);
+}
+.btn-outline-primary:hover {
+    background-color: var(--uni-primary);
+    border-color: var(--uni-primary);
+}
+
+.btn-outline-danger {
+    color: var(--uni-danger);
+    border-color: var(--uni-danger);
+}
+.btn-outline-danger:hover {
+    background-color: var(--uni-danger);
+    border-color: var(--uni-danger);
+}
+
+/* --- Badges --- */
+.badge {
+    font-weight: 500;
+    font-size: 0.75rem;
+    padding: 0.35em 0.65em;
+    border-radius: 0.3rem;
+}
+
+.badge.bg-primary {
+    background-color: var(--uni-primary) !important;
+}
+.badge.bg-success {
+    background-color: var(--uni-success) !important;
+}
+.badge.bg-danger {
+    background-color: var(--uni-danger) !important;
+}
+.badge.bg-warning {
+    background-color: var(--uni-warning) !important;
+}
+.badge.bg-info {
+    background-color: var(--uni-info) !important;
+    color: #fff !important;
+}
+
+/* --- Alerts --- */
+.alert {
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    border: none;
+}
+
+.alert-success { background-color: #d4edda; color: #155724; border-left: 4px solid var(--uni-success); }
+.alert-danger  { background-color: #f8d7da; color: #721c24; border-left: 4px solid var(--uni-danger); }
+.alert-warning { background-color: #fff3cd; color: #856404; border-left: 4px solid var(--uni-warning); }
+.alert-info    { background-color: #d1ecf1; color: #0c5460; border-left: 4px solid var(--uni-info); }
+
+/* --- Nav Tabs (Referentiel, CSV Import) --- */
+.nav-tabs {
+    border-bottom: 2px solid var(--uni-border);
+}
+
+.nav-tabs .nav-link {
+    color: var(--uni-text-muted);
+    font-weight: 500;
+    font-size: 0.875rem;
+    border: none;
+    padding: 0.6rem 1rem;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+}
+
+.nav-tabs .nav-link:hover {
+    color: var(--uni-primary);
+    border-bottom-color: var(--uni-border);
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--uni-primary);
+    background-color: transparent;
+    border-bottom: 2px solid var(--uni-primary);
+}
+
+/* --- Progress Bars --- */
+.progress {
+    border-radius: 0.5rem;
+    background-color: #e9ecef;
+}
+
+.progress-bar {
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.progress-bar.bg-success { background-color: var(--uni-success) !important; }
+.progress-bar.bg-warning { background-color: var(--uni-warning) !important; }
+.progress-bar.bg-danger  { background-color: var(--uni-danger) !important; }
+
+/* --- Pagination --- */
+.pagination .page-link {
+    color: var(--uni-primary);
+    font-size: 0.875rem;
+    border-color: var(--uni-border);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--uni-primary);
+    border-color: var(--uni-primary);
+}
+
+/* --- Login Page --- */
+.login-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--uni-primary) 0%, var(--uni-primary-light) 50%, var(--uni-accent) 100%);
+    padding: 2rem;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    border-radius: 0.75rem;
+    border: none;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+}
+
+.login-header {
+    text-align: center;
+    padding: 2rem 2rem 1rem;
+}
+
+.login-header .logo-icon {
+    font-size: 2.5rem;
+    color: var(--uni-primary);
+    display: block;
+    margin-bottom: 0.75rem;
+}
+
+.login-header h3 {
+    font-size: 1.25rem;
+    color: var(--uni-primary);
+    margin-bottom: 0.25rem;
+}
+
+.login-header p {
+    color: var(--uni-text-muted);
+    font-size: 0.85rem;
+}
+
+/* --- Footer --- */
+.site-footer {
+    background-color: var(--uni-primary-dark);
+    color: rgba(255,255,255,0.6);
+    font-size: 0.8125rem;
+    padding: 1rem 0;
+    margin-top: auto;
+}
+
+.site-footer a {
+    color: rgba(255,255,255,0.8);
+}
+
+/* --- Misc --- */
+code {
+    background-color: #f4f6f8;
+    padding: 0.15em 0.4em;
+    border-radius: 0.25rem;
+    font-size: 0.85em;
+    color: var(--uni-primary);
+}
+
+details summary {
+    cursor: pointer;
+    font-weight: 500;
+}
+
+details summary:hover {
+    color: var(--uni-primary);
+}
+
+/* Card border-danger override for reset page */
+.card.border-danger {
+    border-color: var(--uni-danger) !important;
+}
+
+.card .card-header.bg-danger {
+    background-color: var(--uni-danger) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    h2 {
+        font-size: 1.25rem;
+    }
+
+    .navbar-brand {
+        font-size: 0.95rem;
+    }
+
+    .table th, .table td {
+        font-size: 0.8125rem;
+        padding: 0.5rem;
+    }
+
+    .btn-group-sm > .btn {
+        padding: 0.25rem 0.4rem;
+    }
 }

@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms import StringField, PasswordField, SubmitField, SelectField, BooleanField
 from wtforms.validators import DataRequired, Length, EqualTo, Optional
 
@@ -104,3 +105,24 @@ class ResetPasswordForm(FlaskForm):
         Length(min=8, message='Minimum 8 caractères.'),
     ])
     submit = SubmitField('Réinitialiser')
+
+
+# ---------------------------------------------------------------------------
+# Réinitialisation Système
+# ---------------------------------------------------------------------------
+
+class ResetSystemForm(FlaskForm):
+    password = PasswordField('Mot de passe administrateur', validators=[DataRequired()])
+    submit = SubmitField('Réinitialiser le système')
+
+
+# ---------------------------------------------------------------------------
+# Import CSV
+# ---------------------------------------------------------------------------
+
+class CSVImportForm(FlaskForm):
+    csv_file = FileField('Fichier CSV', validators=[
+        FileRequired('Veuillez sélectionner un fichier.'),
+        FileAllowed(['csv'], 'Seuls les fichiers .csv sont autorisés.'),
+    ])
+    submit = SubmitField('Importer')

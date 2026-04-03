@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Réinitialiser le système{% endblock %}
+
+{% block nav_items %}
+{% include "_nav_admin.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7 col-lg-6">
+        <div class="card shadow-sm border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0"><i class="bi bi-exclamation-triangle-fill"></i> Réinitialisation du système</h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="alert alert-danger">
+                    <strong>Attention !</strong> Cette action est irréversible. Toutes les données seront supprimées :
+                    <ul class="mb-0 mt-2">
+                        <li>Tous les relevés de notes (fichiers et enregistrements)</li>
+                        <li>Tout le référentiel (parcours, années, classes, semestres)</li>
+                        <li>Toutes les affectations</li>
+                        <li>Tous les comptes utilisateurs</li>
+                        <li>Tout le journal d'audit</li>
+                    </ul>
+                </div>
+                <p class="text-muted">
+                    Les comptes par défaut (admin / directeur) seront recréés automatiquement avec les mots de passe initiaux.
+                </p>
+                <hr>
+                <form method="POST" novalidate onsubmit="return confirm('DERNIÈRE CONFIRMATION : Voulez-vous vraiment supprimer TOUTES les données du système ? Cette action est irréversible.')">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.password.label(class="form-label fw-bold") }}
+                        {{ form.password(class="form-control", placeholder="Entrez votre mot de passe pour confirmer") }}
+                        <div class="form-text">Saisissez votre mot de passe administrateur pour confirmer la réinitialisation.</div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        {{ form.submit(class="btn btn-danger") }}
+                        <a href="{{ url_for('admin.parametres') }}" class="btn btn-outline-secondary">Annuler</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

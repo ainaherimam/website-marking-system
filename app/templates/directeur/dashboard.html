@@ -26,9 +26,74 @@
 {% endblock %}
 
 {% block content %}
-<h2 class="mb-4">Tableau de bord</h2>
-<div class="alert alert-info">
-    <i class="bi bi-info-circle"></i> Bienvenue, {{ current_user.prenom }} {{ current_user.nom }}.
+<h2><i class="bi bi-speedometer2"></i> Tableau de bord</h2>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3 col-6">
+        <div class="card shadow-sm stat-card primary">
+            <div class="card-body">
+                <div class="text-muted small text-uppercase">Parcours</div>
+                <div class="fs-2 fw-bold">{{ stats.parcours }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="card shadow-sm stat-card success">
+            <div class="card-body">
+                <div class="text-muted small text-uppercase">Chefs actifs</div>
+                <div class="fs-2 fw-bold">{{ stats.chefs }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="card shadow-sm stat-card info">
+            <div class="card-body">
+                <div class="text-muted small text-uppercase">Relevés déposés</div>
+                <div class="fs-2 fw-bold">{{ stats.releves }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="card shadow-sm stat-card warning">
+            <div class="card-body">
+                <div class="text-muted small text-uppercase">Affectations actives</div>
+                <div class="fs-2 fw-bold">{{ stats.affectations }}</div>
+            </div>
+        </div>
+    </div>
 </div>
-<!-- TODO: Vue d'ensemble des dépôts -->
+
+<h5 class="mb-3 text-muted">Accès rapide</h5>
+<div class="row g-3">
+    <div class="col-md-6 col-lg-4">
+        <a href="{{ url_for('consultation.index') }}" class="text-decoration-none">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center py-4">
+                    <i class="bi bi-file-earmark-spreadsheet fs-1" style="color: var(--uni-primary)"></i>
+                    <h6 class="mt-2 mb-0">Consultation des relevés</h6>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <a href="{{ url_for('referentiel.index') }}" class="text-decoration-none">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center py-4">
+                    <i class="bi bi-database fs-1" style="color: var(--uni-primary)"></i>
+                    <h6 class="mt-2 mb-0">Référentiel académique</h6>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <a href="{{ url_for('directeur.gestion_chefs') }}" class="text-decoration-none">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center py-4">
+                    <i class="bi bi-people fs-1" style="color: var(--uni-primary)"></i>
+                    <h6 class="mt-2 mb-0">Chefs de Parcours</h6>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
 {% endblock %}

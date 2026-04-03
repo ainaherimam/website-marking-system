@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import login_required, current_user
 
 from app import db
-from app.models import User
+from app.models import User, Parcours, Releve, Affectation
 from app.forms import CreateChefForm
 from app.utils import role_required, must_change_password, log_audit
 
@@ -14,7 +14,13 @@ bp = Blueprint('directeur', __name__, template_folder='../templates/directeur')
 @must_change_password
 @role_required('directeur_etudes')
 def dashboard():
-    return render_template('directeur/dashboard.html')
+    stats = {
+        'parcours': Parcours.query.count(),
+        'chefs': User.query.filter_by(role='chef_parcours', actif=True).count(),
+        'releves': Releve.query.count(),
+        'affectations': Affectation.query.filter_by(annee_fin_id=None).count(),
+    }
+    return render_template('directeur/dashboard.html', stats=stats)
 
 
 @bp.route('/consultation')

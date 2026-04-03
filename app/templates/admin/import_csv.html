@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}Import CSV{% endblock %}
+
+{% block nav_items %}
+{% include "_nav_admin.html" %}
+{% endblock %}
+
+{% block content %}
+<h2><i class="bi bi-filetype-csv"></i> Import en masse (CSV)</h2>
+
+<!-- Type selector tabs -->
+<ul class="nav nav-tabs mb-4">
+    {% for key, info in csv_types.items() %}
+    <li class="nav-item">
+        <a class="nav-link {% if csv_type == key %}active{% endif %}"
+           href="{{ url_for('admin.import_csv', type=key) }}">{{ info.label }}</a>
+    </li>
+    {% endfor %}
+</ul>
+
+<div class="row">
+    <!-- Upload form / Confirm -->
+    <div class="col-lg-5 mb-4">
+        {% if preview and not errors %}
+        <!-- Confirm step -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="bi bi-check-circle"></i> Prêt à importer</h5>
+            </div>
+            <div class="card-body p-4">
+                <p>{{ preview|length }} ligne(s) valide(s), prêtes à importer dans <strong>{{ csv_types[csv_type].label }}</strong>.</p>
+                <form method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="action" value="confirm">
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-lg"></i> Confirmer l'import ({{ preview|length }} lignes)
+                        </button>
+                        <a href="{{ url_for('admin.import_csv', type=csv_type) }}" class="btn btn-outline-secondary">Annuler</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <!-- Upload step -->
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">Importer : {{ csv_types[csv_type].label }}</h5>
+            </div>
+            <div class="card-body p-4">
+                {% if errors %}
+                <div class="alert alert-danger">
+                    <i class="bi bi-x-circle"></i> {{ errors|length }} erreur(s) détectée(s). Corrigez le fichier et réessayez.
+                </div>
+                {% endif %}
+                <form method="POST" enctype="multipart/form-data" novalidate>
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.csv_file.label(class="form-label") }}
+                        {{ form.csv_file(class="form-control", accept=".csv") }}
+                        {% for error in form.csv_file.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-eye"></i> Aperçu
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Format info -->
+        <div class="card shadow-sm mt-3">
+            <div class="card-header"><h6 class="mb-0">Format attendu</h6></div>
+            <div class="card-body">
+                <p class="small mb-1"><strong>Colonnes requises :</strong></p>
+                <p class="mb-2"><code>{{ csv_types[csv_type].columns | join(', ') }}</code></p>
+                <p class="small mb-1"><strong>Exemple :</strong></p>
+                <pre class="bg-light p-2 rounded small mb-0">{{ csv_types[csv_type].example }}</pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview table -->
+    <div class="col-lg-7">
+        {% if preview %}
+        <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Aperçu ({{ preview|length }} lignes)</h5>
+                {% if errors %}
+                <span class="badge bg-danger">{{ errors|length }} erreur(s)</span>
+                {% else %}
+                <span class="badge bg-success">Tout est valide</span>
+                {% endif %}
+            </div>
+            <div class="table-responsive">
+                <table class="table table-sm table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            {% for col in csv_types[csv_type].columns %}
+                            <th>{{ col }}</th>
+                            {% endfor %}
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in preview %}
+                        {% set line_num = loop.index + 1 %}
+                        {% set line_errors = [] %}
+                        {% for err_line, err_msgs in errors %}
+                            {% if err_line == line_num %}
+                                {% set _ = line_errors.extend(err_msgs) %}
+                            {% endif %}
+                        {% endfor %}
+                        <tr class="{% if line_errors %}table-danger{% endif %}">
+                            <td>{{ line_num }}</td>
+                            {% for col in csv_types[csv_type].columns %}
+                            <td><small>{{ row[col] or '' }}</small></td>
+                            {% endfor %}
+                            <td>
+                                {% if line_errors %}
+                                <small class="text-danger">
+                                    {% for e in line_errors %}<i class="bi bi-x-circle"></i> {{ e }}<br>{% endfor %}
+                                </small>
+                                {% else %}
+                                <i class="bi bi-check-circle text-success"></i>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center text-muted py-5">
+            <i class="bi bi-upload" style="font-size: 3rem;"></i>
+            <p class="mt-2">Sélectionnez un fichier CSV et cliquez sur Aperçu pour voir les données.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
