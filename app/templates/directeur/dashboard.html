@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Tableau de bord — Directeur des Études{% endblock %}
+
+{% block nav_items %}
+<li class="nav-item">
+    <a class="nav-link active" href="{{ url_for('directeur.dashboard') }}">
+        <i class="bi bi-speedometer2"></i> Tableau de bord
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{{ url_for('consultation.index') }}">
+        <i class="bi bi-file-earmark-spreadsheet"></i> Consultation
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{{ url_for('referentiel.index') }}">
+        <i class="bi bi-database"></i> Référentiel
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{{ url_for('directeur.gestion_chefs') }}">
+        <i class="bi bi-people"></i> Chefs de Parcours
+    </a>
+</li>
+{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Tableau de bord</h2>
+<div class="alert alert-info">
+    <i class="bi bi-info-circle"></i> Bienvenue, {{ current_user.prenom }} {{ current_user.nom }}.
+</div>
+<!-- TODO: Vue d'ensemble des dépôts -->
+{% endblock %}

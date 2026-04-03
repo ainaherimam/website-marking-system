@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Gestion des utilisateurs{% endblock %}
+
+{% block nav_items %}
+{% include "_nav_admin.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-people"></i> Gestion des utilisateurs</h2>
+    <a href="{{ url_for('admin.user_add') }}" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> Créer un compte
+    </a>
+</div>
+
+<div class="card shadow-sm">
+<div class="table-responsive">
+<table class="table table-hover mb-0">
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Identifiant</th>
+            <th>Rôle</th>
+            <th>Statut</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for user in users %}
+    <tr class="{% if not user.actif %}table-secondary{% endif %}">
+        <td>{{ user.prenom }} {{ user.nom }}</td>
+        <td><code>{{ user.email }}</code></td>
+        <td>
+            {% if user.role == 'admin' %}
+            <span class="badge bg-danger">Admin</span>
+            {% elif user.role == 'directeur_etudes' %}
+            <span class="badge bg-primary">Directeur</span>
+            {% else %}
+            <span class="badge bg-info text-dark">Chef de Parcours</span>
+            {% endif %}
+        </td>
+        <td>
+            {% if user.actif %}
+            <span class="badge bg-success">Actif</span>
+            {% else %}
+            <span class="badge bg-secondary">Inactif</span>
+            {% endif %}
+            {% if user.doit_changer_mdp %}
+            <span class="badge bg-warning text-dark">MDP temporaire</span>
+            {% endif %}
+        </td>
+        <td>
+            <div class="btn-group btn-group-sm">
+                <a href="{{ url_for('admin.user_reset_password', id=user.id) }}"
+                   class="btn btn-outline-warning" title="Réinitialiser MDP">
+                    <i class="bi bi-key"></i>
+                </a>
+                <form method="POST" action="{{ url_for('admin.user_toggle', id=user.id) }}" class="d-inline">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    {% if user.actif %}
+                    <button class="btn btn-outline-secondary" title="Désactiver"
+                            onclick="return confirm('Désactiver {{ user.prenom }} {{ user.nom }} ?')">
+                        <i class="bi bi-person-dash"></i>
+                    </button>
+                    {% else %}
+                    <button class="btn btn-outline-success" title="Réactiver">
+                        <i class="bi bi-person-check"></i>
+                    </button>
+                    {% endif %}
+                </form>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+</div>
+{% endblock %}

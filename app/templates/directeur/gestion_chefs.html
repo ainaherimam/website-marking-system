@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Gestion des Chefs de Parcours{% endblock %}
+
+{% block nav_items %}
+<li class="nav-item">
+    <a class="nav-link" href="{{ url_for('directeur.dashboard') }}">
+        <i class="bi bi-speedometer2"></i> Tableau de bord
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{{ url_for('consultation.index') }}">
+        <i class="bi bi-file-earmark-spreadsheet"></i> Consultation
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{{ url_for('referentiel.index') }}">
+        <i class="bi bi-database"></i> Référentiel
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link active" href="{{ url_for('directeur.gestion_chefs') }}">
+        <i class="bi bi-people"></i> Chefs de Parcours
+    </a>
+</li>
+{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-people"></i> Gestion des Chefs de Parcours</h2>
+
+<div class="row">
+    <!-- Liste des chefs -->
+    <div class="col-lg-7 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header"><h5 class="mb-0">Chefs de Parcours existants</h5></div>
+            <div class="card-body">
+                {% if chefs %}
+                <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead><tr><th>Nom</th><th>Identifiant</th><th>Statut</th></tr></thead>
+                    <tbody>
+                    {% for c in chefs %}
+                    <tr>
+                        <td>{{ c.prenom }} {{ c.nom }}</td>
+                        <td><code>{{ c.email }}</code></td>
+                        <td>
+                            {% if c.actif %}
+                            <span class="badge bg-success">Actif</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Inactif</span>
+                            {% endif %}
+                            {% if c.doit_changer_mdp %}
+                            <span class="badge bg-warning text-dark">MDP à changer</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+                {% else %}
+                <p class="text-muted mb-0">Aucun chef de parcours enregistré.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulaire de création -->
+    <div class="col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-header"><h5 class="mb-0">Créer un compte</h5></div>
+            <div class="card-body">
+                <form method="POST" novalidate>
+                    {{ form.hidden_tag() }}
+                    {% for field in form if field.type not in ['CSRFTokenField', 'SubmitField', 'HiddenField'] %}
+                    <div class="mb-3">
+                        {{ field.label(class="form-label") }}
+                        {{ field(class="form-control") }}
+                        {% for error in field.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                    <div class="d-grid">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

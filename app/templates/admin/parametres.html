@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Paramètres système{% endblock %}
+
+{% block nav_items %}
+{% include "_nav_admin.html" %}
+{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-gear"></i> Paramètres système</h2>
+
+<div class="row justify-content-center">
+    <div class="col-md-7 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <form method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    {% if 'taille_max_fichier_mo' in params %}
+                    <div class="mb-3">
+                        <label class="form-label">Taille maximale des fichiers (Mo)</label>
+                        <input type="number" name="taille_max_fichier_mo" class="form-control"
+                               value="{{ params['taille_max_fichier_mo'].valeur }}" min="1" max="100">
+                    </div>
+                    {% endif %}
+
+                    {% if 'timeout_session_minutes' in params %}
+                    <div class="mb-3">
+                        <label class="form-label">Timeout de session (minutes)</label>
+                        <input type="number" name="timeout_session_minutes" class="form-control"
+                               value="{{ params['timeout_session_minutes'].valeur }}" min="5" max="480">
+                    </div>
+                    {% endif %}
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-lg"></i> Enregistrer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+.env
+*.db
+flask_session/
+venv/
+.venv/
+instance/
+uploads/
+*.log
+
+# Claude Code
+.claude/
+CLAUDE.md
+
+# Project docs (not for repo)
+Roadmap.md
+WORKLOG.md
+README.md

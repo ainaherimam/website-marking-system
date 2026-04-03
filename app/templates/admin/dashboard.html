@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Administration{% endblock %}
+
+{% block nav_items %}
+{% include "_nav_admin.html" %}
+{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Administration</h2>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm stat-card primary">
+            <div class="card-body">
+                <div class="text-muted small text-uppercase">Utilisateurs actifs</div>
+                <div class="fs-2 fw-bold">{{ stats.active_users }}</div>
+                <div class="text-muted small">sur {{ stats.total_users }} au total</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm stat-card success">
+            <div class="card-body">
+                <div class="text-muted small text-uppercase">Chefs de Parcours</div>
+                <div class="fs-2 fw-bold">{{ stats.chefs }}</div>
+                <div class="text-muted small">comptes actifs</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6 col-lg-4">
+        <a href="{{ url_for('admin.utilisateurs') }}" class="text-decoration-none">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center py-4">
+                    <i class="bi bi-people fs-1 text-primary"></i>
+                    <h5 class="mt-2">Gestion des utilisateurs</h5>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <a href="{{ url_for('referentiel.index') }}" class="text-decoration-none">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center py-4">
+                    <i class="bi bi-database fs-1 text-primary"></i>
+                    <h5 class="mt-2">Référentiel académique</h5>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <a href="{{ url_for('admin.audit') }}" class="text-decoration-none">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center py-4">
+                    <i class="bi bi-journal-text fs-1 text-primary"></i>
+                    <h5 class="mt-2">Journal d'audit</h5>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+{% endblock %}

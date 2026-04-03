@@ -1,0 +1,39 @@
+/* Relevés de Notes — Styles personnalisés */
+
+body {
+    background-color: #f5f7fa;
+    min-height: 100vh;
+}
+
+.navbar-brand {
+    font-weight: 600;
+}
+
+.card {
+    border: none;
+    border-radius: 0.75rem;
+}
+
+.card-title {
+    font-weight: 600;
+}
+
+/* Dashboard stats cards */
+.stat-card {
+    border-left: 4px solid;
+    border-radius: 0.5rem;
+}
+
+.stat-card.primary { border-left-color: var(--bs-primary); }
+.stat-card.success { border-left-color: var(--bs-success); }
+.stat-card.warning { border-left-color: var(--bs-warning); }
+.stat-card.danger  { border-left-color: var(--bs-danger); }
+
+/* Table improvements */
+.table th {
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #6c757d;
+}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block nav_items %}
+{% include "_nav_" + current_user.role + ".html" ignore missing %}
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-2">
+    <div class="col-md-7 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h4 class="card-title mb-3">{{ title }}</h4>
+                <form method="POST" novalidate>
+                    {{ form.hidden_tag() }}
+                    {% for field in form if field.type not in ['CSRFTokenField', 'SubmitField', 'HiddenField'] %}
+                    <div class="mb-3">
+                        {{ field.label(class="form-label") }}
+                        {% if field.type == 'SelectField' %}
+                            {{ field(class="form-select") }}
+                        {% else %}
+                            {{ field(class="form-control") }}
+                        {% endif %}
+                        {% for error in field.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                    <div class="d-flex gap-2">
+                        {{ form.submit(class="btn btn-primary") }}
+                        <a href="{{ url_for('referentiel.index') }}" class="btn btn-outline-secondary">Annuler</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

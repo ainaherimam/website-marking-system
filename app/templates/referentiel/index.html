@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+
+{% block title %}Gestion du référentiel{% endblock %}
+
+{% block nav_items %}
+{% include "_nav_" + current_user.role + ".html" ignore missing %}
+{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-database"></i> Gestion du référentiel</h2>
+
+<!-- Onglets -->
+<ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+        <a class="nav-link {% if tab == 'parcours' %}active{% endif %}"
+           href="{{ url_for('referentiel.index', tab='parcours') }}">Parcours</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if tab == 'annees' %}active{% endif %}"
+           href="{{ url_for('referentiel.index', tab='annees') }}">Années académiques</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if tab == 'classes' %}active{% endif %}"
+           href="{{ url_for('referentiel.index', tab='classes') }}">Classes</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if tab == 'semestres' %}active{% endif %}"
+           href="{{ url_for('referentiel.index', tab='semestres') }}">Semestres</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if tab == 'affectations' %}active{% endif %}"
+           href="{{ url_for('referentiel.index', tab='affectations') }}">Affectations</a>
+    </li>
+</ul>
+
+<!-- ── Parcours ──────────────────────────────────────────── -->
+{% if tab == 'parcours' %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h5>Parcours</h5>
+    <a href="{{ url_for('referentiel.parcours_add') }}" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-lg"></i> Ajouter
+    </a>
+</div>
+{% if parcours %}
+<div class="table-responsive">
+<table class="table table-hover">
+    <thead><tr><th>Code</th><th>Nom</th><th>Classes</th><th>Actions</th></tr></thead>
+    <tbody>
+    {% for p in parcours %}
+    <tr>
+        <td><code>{{ p.code }}</code></td>
+        <td>{{ p.nom }}</td>
+        <td>{{ p.classes.count() }}</td>
+        <td>
+            <a href="{{ url_for('referentiel.parcours_edit', id=p.id) }}" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-pencil"></i>
+            </a>
+            <form method="POST" action="{{ url_for('referentiel.parcours_delete', id=p.id) }}" class="d-inline"
+                  onsubmit="return confirm('Supprimer le parcours « {{ p.nom }} » ?')">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% else %}
+<p class="text-muted">Aucun parcours enregistré.</p>
+{% endif %}
+{% endif %}
+
+<!-- ── Années académiques ────────────────────────────────── -->
+{% if tab == 'annees' %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h5>Années académiques</h5>
+    <a href="{{ url_for('referentiel.annee_add') }}" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-lg"></i> Ajouter
+    </a>
+</div>
+{% if annees %}
+<div class="table-responsive">
+<table class="table table-hover">
+    <thead><tr><th>Code</th><th>Libellé</th><th>Actions</th></tr></thead>
+    <tbody>
+    {% for a in annees %}
+    <tr>
+        <td><code>{{ a.code }}</code></td>
+        <td>{{ a.libelle }}</td>
+        <td>
+            <a href="{{ url_for('referentiel.annee_edit', id=a.id) }}" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-pencil"></i>
+            </a>
+            <form method="POST" action="{{ url_for('referentiel.annee_delete', id=a.id) }}" class="d-inline"
+                  onsubmit="return confirm('Supprimer « {{ a.libelle }} » ?')">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% else %}
+<p class="text-muted">Aucune année académique enregistrée.</p>
+{% endif %}
+{% endif %}
+
+<!-- ── Classes ────────────────────────────────────────────── -->
+{% if tab == 'classes' %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h5>Classes</h5>
+    <a href="{{ url_for('referentiel.classe_add') }}" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-lg"></i> Ajouter
+    </a>
+</div>
+{% if classes %}
+<div class="table-responsive">
+<table class="table table-hover">
+    <thead><tr><th>Code</th><th>Nom</th><th>Parcours</th><th>Semestres</th><th>Actions</th></tr></thead>
+    <tbody>
+    {% for c in classes %}
+    <tr>
+        <td><code>{{ c.code }}</code></td>
+        <td>{{ c.nom }}</td>
+        <td>{{ c.parcours.nom }}</td>
+        <td>{{ c.semestres.count() }}</td>
+        <td>
+            <a href="{{ url_for('referentiel.classe_edit', id=c.id) }}" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-pencil"></i>
+            </a>
+            <form method="POST" action="{{ url_for('referentiel.classe_delete', id=c.id) }}" class="d-inline"
+                  onsubmit="return confirm('Supprimer la classe « {{ c.nom }} » ?')">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% else %}
+<p class="text-muted">Aucune classe enregistrée.</p>
+{% endif %}
+{% endif %}
+
+<!-- ── Semestres ──────────────────────────────────────────── -->
+{% if tab == 'semestres' %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h5>Semestres</h5>
+    <a href="{{ url_for('referentiel.semestre_add') }}" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-lg"></i> Ajouter
+    </a>
+</div>
+{% if semestres %}
+<div class="table-responsive">
+<table class="table table-hover">
+    <thead><tr><th>Code</th><th>Nom</th><th>Classe</th><th>Parcours</th><th>Actions</th></tr></thead>
+    <tbody>
+    {% for s in semestres %}
+    <tr>
+        <td><code>{{ s.code }}</code></td>
+        <td>{{ s.nom }}</td>
+        <td>{{ s.classe.nom }}</td>
+        <td>{{ s.classe.parcours.nom }}</td>
+        <td>
+            <a href="{{ url_for('referentiel.semestre_edit', id=s.id) }}" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-pencil"></i>
+            </a>
+            <form method="POST" action="{{ url_for('referentiel.semestre_delete', id=s.id) }}" class="d-inline"
+                  onsubmit="return confirm('Supprimer « {{ s.nom }} » ?')">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% else %}
+<p class="text-muted">Aucun semestre enregistré.</p>
+{% endif %}
+{% endif %}
+
+<!-- ── Affectations ───────────────────────────────────────── -->
+{% if tab == 'affectations' %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h5>Affectations Chef → Parcours</h5>
+    <a href="{{ url_for('referentiel.affectation_add') }}" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-lg"></i> Ajouter
+    </a>
+</div>
+{% if affectations %}
+<div class="table-responsive">
+<table class="table table-hover">
+    <thead><tr><th>Chef de Parcours</th><th>Parcours</th><th>Début</th><th>Fin</th><th>Actions</th></tr></thead>
+    <tbody>
+    {% for a in affectations %}
+    <tr>
+        <td>{{ a.utilisateur.prenom }} {{ a.utilisateur.nom }}</td>
+        <td>{{ a.parcours.nom }} (<code>{{ a.parcours.code }}</code>)</td>
+        <td>{{ a.annee_debut.libelle }}</td>
+        <td>{% if a.annee_fin %}{{ a.annee_fin.libelle }}{% else %}<span class="badge bg-success">En cours</span>{% endif %}</td>
+        <td>
+            <form method="POST" action="{{ url_for('referentiel.affectation_delete', id=a.id) }}" class="d-inline"
+                  onsubmit="return confirm('Supprimer cette affectation ?')">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% else %}
+<p class="text-muted">Aucune affectation enregistrée.</p>
+{% endif %}
+{% endif %}
+
+{% endblock %}

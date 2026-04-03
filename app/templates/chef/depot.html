@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}Dépôt de relevés{% endblock %}
+
+{% block nav_items %}
+<li class="nav-item">
+    <a class="nav-link" href="{{ url_for('chef_parcours.dashboard') }}">
+        <i class="bi bi-speedometer2"></i> Tableau de bord
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link active" href="{{ url_for('chef_parcours.depot') }}">
+        <i class="bi bi-cloud-upload"></i> Dépôt de relevés
+    </a>
+</li>
+{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Dépôt de relevés</h2>
+
+<!-- Sélecteur Parcours / Année -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('chef_parcours.depot') }}" id="selectorForm" class="row g-3 align-items-end">
+            <div class="col-md-5">
+                <label class="form-label">Parcours</label>
+                <select class="form-select" id="parcours_select">
+                    <option value="">— Choisir un parcours —</option>
+                    {% for p in parcours_list %}
+                    <option value="{{ p.id }}" {% if selected_parcours and p.id == selected_parcours.id %}selected{% endif %}>
+                        {{ p.nom }} ({{ p.code }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-5">
+                <label class="form-label">Année académique</label>
+                <select class="form-select" id="annee_select">
+                    <option value="">— Choisir une année —</option>
+                    {% for a in annees %}
+                    <option value="{{ a.id }}" {% if selected_annee and a.id == selected_annee.id %}selected{% endif %}>
+                        {{ a.libelle }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-primary w-100" onclick="navigateToDepot()">
+                    <i class="bi bi-arrow-right"></i> Afficher
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if not parcours_list %}
+<div class="alert alert-info">
+    <i class="bi bi-info-circle"></i> Vous n'êtes affecté à aucun parcours.
+</div>
+{% endif %}
+
+<!-- Grille Classe × Semestre -->
+{% if selected_parcours and selected_annee and grille %}
+<div class="card shadow-sm">
+    <div class="card-header">
+        <h5 class="mb-0">{{ selected_parcours.nom }} — {{ selected_annee.libelle }}</h5>
+    </div>
+    <div class="table-responsive">
+    <table class="table table-hover mb-0">
+        <thead>
+            <tr>
+                <th>Classe</th>
+                <th>Semestre</th>
+                <th>Statut</th>
+                <th>Fichier</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in grille %}
+        <tr>
+            <td>{{ item.classe.nom }} (<code>{{ item.classe.code }}</code>)</td>
+            <td>{{ item.semestre.nom }} (<code>{{ item.semestre.code }}</code>)</td>
+            <td>
+                {% if item.releve %}
+                <span class="badge bg-success"><i class="bi bi-check-circle"></i> Déposé</span>
+                {% else %}
+                <span class="badge bg-secondary"><i class="bi bi-dash-circle"></i> Manquant</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if item.releve %}
+                <small class="text-muted">
+                    {{ item.releve.nom_fichier_original }}<br>
+                    {{ (item.releve.taille_fichier / 1024)|round(1) }} Ko —
+                    {{ item.releve.date_depot.strftime('%d/%m/%Y %H:%M') }}
+                </small>
+                {% else %}
+                —
+                {% endif %}
+            </td>
+            <td>
+                {% if item.releve %}
+                    {# Télécharger #}
+                    <a href="{{ url_for('chef_parcours.telecharger', releve_id=item.releve.id) }}"
+                       class="btn btn-sm btn-outline-primary" title="Télécharger">
+                        <i class="bi bi-download"></i>
+                    </a>
+                    {# Remplacer #}
+                    <button class="btn btn-sm btn-outline-warning" title="Remplacer"
+                            onclick="document.getElementById('replace-{{ item.releve.id }}').click()">
+                        <i class="bi bi-arrow-repeat"></i>
+                    </button>
+                    <form method="POST" action="{{ url_for('chef_parcours.remplacer', releve_id=item.releve.id) }}"
+                          enctype="multipart/form-data" class="d-none">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="file" id="replace-{{ item.releve.id }}" name="file"
+                               accept=".xlsx,.xls" onchange="this.form.submit()">
+                    </form>
+                    {# Supprimer #}
+                    <form method="POST" action="{{ url_for('chef_parcours.supprimer', releve_id=item.releve.id) }}"
+                          class="d-inline"
+                          onsubmit="return confirm('Supprimer ce relevé ?')">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button class="btn btn-sm btn-outline-danger" title="Supprimer">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                {% else %}
+                    {# Déposer #}
+                    <button class="btn btn-sm btn-primary" title="Déposer"
+                            onclick="document.getElementById('upload-{{ item.classe.id }}-{{ item.semestre.id }}').click()">
+                        <i class="bi bi-cloud-upload"></i> Déposer
+                    </button>
+                    <form method="POST"
+                          action="{{ url_for('chef_parcours.upload',
+                                             parcours_id=selected_parcours.id,
+                                             annee_id=selected_annee.id,
+                                             classe_id=item.classe.id,
+                                             semestre_id=item.semestre.id) }}"
+                          enctype="multipart/form-data" class="d-none">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="file" id="upload-{{ item.classe.id }}-{{ item.semestre.id }}" name="file"
+                               accept=".xlsx,.xls" onchange="this.form.submit()">
+                    </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</div>
+{% elif selected_parcours and selected_annee %}
+<div class="alert alert-warning">
+    <i class="bi bi-exclamation-triangle"></i> Aucune classe/semestre configurée pour ce parcours.
+    Contactez le Directeur des Études.
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function navigateToDepot() {
+    const parcours = document.getElementById('parcours_select').value;
+    const annee = document.getElementById('annee_select').value;
+    if (parcours && annee) {
+        window.location.href = `/chef/depot/${parcours}/${annee}`;
+    }
+}
+</script>
+{% endblock %}

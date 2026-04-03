@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Tableau de bord — Chef de Parcours{% endblock %}
+
+{% block nav_items %}
+<li class="nav-item">
+    <a class="nav-link active" href="{{ url_for('chef_parcours.dashboard') }}">
+        <i class="bi bi-speedometer2"></i> Tableau de bord
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{{ url_for('chef_parcours.depot') }}">
+        <i class="bi bi-cloud-upload"></i> Dépôt de relevés
+    </a>
+</li>
+{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Tableau de bord</h2>
+
+{% if not synthese %}
+<div class="alert alert-info">
+    <i class="bi bi-info-circle"></i> Aucune affectation trouvée.
+    Contactez le Directeur des Études pour être affecté à un parcours.
+</div>
+{% endif %}
+
+{% for item in synthese %}
+<div class="card shadow-sm mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">{{ item.parcours.nom }} — {{ item.annee.libelle }}</h5>
+        <a href="{{ url_for('chef_parcours.depot', parcours_id=item.parcours.id, annee_id=item.annee.id) }}"
+           class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-cloud-upload"></i> Déposer
+        </a>
+    </div>
+    <div class="card-body">
+        <div class="d-flex align-items-center mb-2">
+            <span class="me-3 fw-bold">{{ item.deposes }} / {{ item.total }} relevés déposés</span>
+            <span class="badge {% if item.pct == 100 %}bg-success{% elif item.pct >= 50 %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                {{ item.pct }}%
+            </span>
+        </div>
+        <div class="progress mb-3" style="height: 20px;">
+            <div class="progress-bar {% if item.pct == 100 %}bg-success{% elif item.pct >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
+                 role="progressbar" style="width: {{ item.pct }}%"
+                 aria-valuenow="{{ item.pct }}" aria-valuemin="0" aria-valuemax="100">
+                {{ item.pct }}%
+            </div>
+        </div>
+        {% if item.manquants %}
+        <details>
+            <summary class="text-muted small">
+                <i class="bi bi-exclamation-triangle"></i> {{ item.manquants|length }} relevé(s) manquant(s)
+            </summary>
+            <ul class="list-unstyled mt-2 ms-3 small">
+                {% for m in item.manquants %}
+                <li><i class="bi bi-x-circle text-danger"></i> {{ m }}</li>
+                {% endfor %}
+            </ul>
+        </details>
+        {% else %}
+        <p class="text-success mb-0 small"><i class="bi bi-check-circle"></i> Tous les relevés ont été déposés.</p>
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
