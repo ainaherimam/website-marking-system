@@ -24,6 +24,10 @@ def create_app(config_class=Config):
     login_manager.init_app(app)
     csrf.init_app(app)
     limiter.init_app(app)
+
+    # Pass our existing db instance to Flask-Session when using sqlalchemy backend
+    if app.config.get('SESSION_TYPE') == 'sqlalchemy':
+        app.config['SESSION_SQLALCHEMY'] = db
     session_ext.init_app(app)
 
     login_manager.login_view = 'auth.login'
